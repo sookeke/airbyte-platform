@@ -135,7 +135,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
-    "@airbyte/eslint-plugin": "link:packages/eslint-plugin",
+    "@airbyte/eslint-plugin": "./packages/eslint-plugin",
     "@babel/core": "^7.23.2",
     "@babel/preset-env": "^7.23.2",
     "@babel/preset-react": "^7.22.15",

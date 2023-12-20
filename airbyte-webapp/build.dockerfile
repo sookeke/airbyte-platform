@@ -5,7 +5,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 ENV NPM_CONFIG_PREFIX=/pnpm
 ARG PNPM_VERSION=8.6.12
 ARG PNPM_STORE_DIR=/pnpm/store
-ARG PROJECT_DIR
+ARG PROJECT_DIR=/workspace/airbyte-webapp
 
 RUN apt update && apt install -y \
     curl \

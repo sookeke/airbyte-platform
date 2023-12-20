@@ -252,7 +252,7 @@ dependencies:
 
 devDependencies:
   '@airbyte/eslint-plugin':
-    specifier: link:packages/eslint-plugin
+    specifier: ./packages/eslint-plugin
     version: link:packages/eslint-plugin
   '@babel/core':
     specifier: ^7.23.2
