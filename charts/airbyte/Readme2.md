@@ -113,7 +113,20 @@ docker login -u $(oc whoami) -p $(oc whoami -t) image-registry.apps.emerald.devo
 ```
 - Tag the release image ->
 ``` docker tag airbyte-webapp-release:0.50.11 image-registry.apps.emerald.devops.gov.bc.ca/{YOUR_NAMESPACE}/airbyte-webapp-release:0.50.11 ```
-- Update the airbyte-webapp value image to point to this image 
+- Push the image to the registry
+  ``` docker push {tagged_image}
+  ```
+  *** Note for emerald you will need artifactory image registry instead*** 
+- Update the airbyte-webapp value image to point to this image
+```
+  image:
+    repository: airbyte/webapp
+    pullPolicy: IfNotPresent
+
+  image:
+    repository: {your_newly_published_image}
+    pullPolicy: IfNotPresent
+```
 - After all these you can run helm install -> for e.g 
 ```
 {dir}\airbyte-platform\charts\airbyte> helm install my-airbyte-release . --dependency-update --values .\values.yaml
