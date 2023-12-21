@@ -36,8 +36,16 @@ subjects:
     name: airbyte-admin
 
 ```
-2. Delete this service account as part of helm deploy as this was created in previously.
-
+2. Set create service account to false in the airbyte helm chart because this was created in previously.
+```
+serviceAccount:
+  # -- Specifies whether a ServiceAccount should be created
+  create: false
+  # -- Annotations for service account. Evaluated as a template. Only used if `create` is `true`.
+  annotations: {}
+  # -- Name of the service account to use. If not set and create is true, a name is generated using the fullname template.
+  name: *service-account-name
+```
 3.  Give project permission to the service account
 
 ```
