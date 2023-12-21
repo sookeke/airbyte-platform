@@ -120,3 +120,4 @@ docker login -u $(oc whoami) -p $(oc whoami -t) image-registry.apps.emerald.devo
 
 ```
 
+![image](https://github.com/sookeke/airbyte-platform/assets/76934070/c4209e03-c6fd-4cf3-95f6-56df8f404620)
