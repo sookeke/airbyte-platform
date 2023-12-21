@@ -4,7 +4,7 @@ FROM ${BUILD_IMAGE} AS builder
 
 FROM nginx:alpine AS release 
 
-EXPOSE 8081
+EXPOSE 8080
 
 ARG SRC_DIR=/workspace/airbyte-webapp/build/app/build/app
 

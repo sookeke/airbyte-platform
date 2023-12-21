@@ -11,9 +11,9 @@ upstream keycloak {
 }
 
 server {
-    listen       8081;
-    listen  [::]:8081;
-    server_name  localhost;
+    listen       8080;
+    listen  [::]:8080;
+    server_name  localhost *.gov.bc.ca;
 
     add_header Content-Security-Policy "script-src * 'unsafe-inline'; worker-src 'self' blob:;";
 
@@ -47,7 +47,7 @@ server {
         fastcgi_read_timeout 1h;
         proxy_read_timeout 1h;
         client_max_body_size 200M;
-        proxy_pass http://api-server/api/;
+        proxy_pass http://my-airbyte-release-airbyte-api-server-svc:8080/api/;
 
         # Unset X-Airbyte-Auth header so that it cannot be used by external requests for authentication
         proxy_set_header X-Airbyte-Auth "";
@@ -57,7 +57,7 @@ server {
         fastcgi_read_timeout 1h;
         proxy_read_timeout 1h;
         client_max_body_size 200M;
-        proxy_pass http://connector-builder-server/;
+        proxy_pass http://my-airbyte-release-airbyte-connector-builder-server-svc:8080/;
     }
 
     location /auth/ {
