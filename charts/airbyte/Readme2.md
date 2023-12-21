@@ -36,12 +36,12 @@ subjects:
     name: airbyte-admin
 
 ```
+2. Delete this service account as part of helm deploy as this was created in previously.
 
+3.  Give project permission to the service account
 
-2.  Give project permission to the service account
-
-` ``oc policy add-role-to-user edit system:serviceaccount:{YOUR_NAMESPACE}:airbyte-admin -n {YOUR_NAMESPACE}```
-3. The service account will create a token called airbyte-admin-token-XXX, use this token to login and install airbyte
+```oc policy add-role-to-user edit system:serviceaccount:{YOUR_NAMESPACE}:airbyte-admin -n {YOUR_NAMESPACE}```
+4. The service account will create a token called airbyte-admin-token-XXX, use this token to login and install airbyte
 ```oc login --token={token_key}```
 **You do not need steps 1 when using insternal pipeline like ArgoCD**
 
