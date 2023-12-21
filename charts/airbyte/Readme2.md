@@ -1,6 +1,6 @@
-#Airbyte Installation OpenShift
+# Airbyte Installation OpenShift
 
-##STEP 1 - PREPARE ACCOUNT
+## STEP 1 - PREPARE ACCOUNT
 
 1. Create a Service account with necessary role and rolebinding using the serviceAccount YAML in the Airbyte Chart template folder e.g.
 
