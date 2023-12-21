@@ -127,7 +127,7 @@ docker build -t airbyte-webapp-release:0.50.11 -f ./airbyte-webapp/release:docke
   ```
 	docker push {tagged_image}
   ```
-  *** Note for emerald you will need artifactory image registry and all necessaily ntwork policies to allow communicaiton between pods instead*** 
+  *** Note for emerald you will need artifactory image registry and all necessaily ntwork policies to allow communicaiton between pods *** 
 For example - For egress between all airbyte pods is below. DO the same for ingress
 ```
 kind: NetworkPolicy
