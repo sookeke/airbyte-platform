@@ -96,31 +96,60 @@ server {
 10. Update build and release dockerfile
 - Build:dockerfile update project dir to 
 ```ARG PROJECT_DIR=/workspace/airbyte-webapp```
-11. build the docker image with tag for example 
-``` 
-docker build -t airbyte-webapp:0.50.11 -f ./airbyte-webapp/build:dockerfile . --no-cache
+11.  Before you build the image do the following to build your node_module
 ```
-12. update the release:dockerfile to expose port 8080 and build image to you just build image i.e 
-``` ARG BUILD_IMAGE=airbyte-webapp:0.50.11```
-13.  Before you build the image do the following to build your node_module
-     ```
      - npm install -g pnpm@8.6.12
      - nvm install 18.15.0
      - nvm use 18.15.0
      - npm i
      - pnpm i
+```
+12. build the build docker image with tag for example 
+``` 
+docker build -t airbyte-webapp:0.50.11 -f ./airbyte-webapp/build:dockerfile . --no-cache
+```
+13. update the release:dockerfile to expose port 8080 and build image to you just build image i.e 
+``` ARG BUILD_IMAGE=airbyte-webapp:0.50.11```
+
+14. Build the release
+```
+docker build -t airbyte-webapp-release:0.50.11 -f ./airbyte-webapp/release:dockerfile . --no-cache
+```
+15. Publish this image to your target image registry
+    - For Openshift Image registry
+       1. Login to openshift ->          
 	```
-- Build the release docker build -t airbyte-webapp-release:0.50.11 -f ./airbyte-webapp/release:dockerfile . --no-cache
-- Login to openshift -> 
-```
-docker login -u $(oc whoami) -p $(oc whoami -t) image-registry.apps.emerald.devops.gov.bc.ca
-```
-- Tag the release image ->
+	docker login -u $(oc whoami) -p $(oc whoami -t) image-registry.apps.emerald.devops.gov.bc.ca
+	```
+       2. Tag the release image ->
 ``` docker tag airbyte-webapp-release:0.50.11 image-registry.apps.emerald.devops.gov.bc.ca/{YOUR_NAMESPACE}/airbyte-webapp-release:0.50.11 ```
-- Push the image to the registry
-  ``` docker push {tagged_image}
+       3. Push the image to the registry
   ```
-  *** Note for emerald you will need artifactory image registry instead*** 
+	docker push {tagged_image}
+  ```
+  *** Note for emerald you will need artifactory image registry and all necessaily ntwork policies to allow communicaiton between pods instead*** 
+For example - For egress between all airbyte pods is below. DO the same for ingress
+```
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: egress-from-airbyte-to-airbyte
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: my-airbyte-release # your release name
+  egress:
+    - ports:
+        - protocol: TCP # add all other airbyte ports
+          port: 8080
+      to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: my-airbyte-release
+  policyTypes:
+    - Egress
+
+```
 - Update the airbyte-webapp value image to point to this image
 ```
   image:
