@@ -119,5 +119,7 @@ docker login -u $(oc whoami) -p $(oc whoami -t) image-registry.apps.emerald.devo
 {dir}\airbyte-platform\charts\airbyte> helm install my-airbyte-release . --dependency-update --values .\values.yaml
 
 ```
+Value files used can be found here
+https://github.com/sookeke/airbyte-platform/blob/isb/charts/airbyte/values.yaml
 
 ![image](https://github.com/sookeke/airbyte-platform/assets/76934070/c4209e03-c6fd-4cf3-95f6-56df8f404620)
