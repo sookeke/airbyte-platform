@@ -40,9 +40,13 @@ subjects:
 
 3.  Give project permission to the service account
 
-```oc policy add-role-to-user edit system:serviceaccount:{YOUR_NAMESPACE}:airbyte-admin -n {YOUR_NAMESPACE}```
+```
+oc policy add-role-to-user edit system:serviceaccount:{YOUR_NAMESPACE}:airbyte-admin -n {YOUR_NAMESPACE}
+```
 4. The service account will create a token called airbyte-admin-token-XXX, use this token to login and install airbyte
-```oc login --token={token_key}```
+```
+oc login --token={token_key}
+```
 **You do not need steps 1 when using insternal pipeline like ArgoCD**
 
 ## STEP 2 - Helm Values
