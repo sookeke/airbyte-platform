@@ -6,7 +6,7 @@
     "pnpm": "8.6.12"
   },
   "scripts": {
-    "prepare": "./scripts/install-githooks.sh",
+    "prepare": "bash ./scripts/install-githooks.sh",
     "prestart": "TS_NODE_TRANSPILE_ONLY=true pnpm run generate-client",
     "start": "vite",
     "start:k8s": "DOTENV_CONFIG_PATH=./.env.development-k8s NODE_OPTIONS='-r dotenv/config' vite",
@@ -18,7 +18,7 @@
     "preoss-preview": "TS_NODE_TRANSPILE_ONLY=true pnpm run generate-client",
     "oss-preview": "DOTENV_CONFIG_DEBUG=true DOTENV_CONFIG_PATH=./.env.development NODE_OPTIONS='-r dotenv/config' vite build && vite preview --port 3000",
     "prebuild": "pnpm run generate-client",
-    "build": ". ./scripts/calculate-source-hash.sh && vite build",
+    "build": "bash ./scripts/calculate-source-hash.sh && vite build",
     "pretest": "TS_NODE_TRANSPILE_ONLY=true pnpm run generate-client",
     "pretest:ci": "TS_NODE_TRANSPILE_ONLY=true pnpm run generate-client",
     "test": "jest --watch",
@@ -32,7 +32,7 @@
     "stylelint": "stylelint 'src/**/*.{css,scss}'",
     "stylelint-check": "stylelint-config-prettier-scss-check",
     "license-check": "node ./scripts/license-check.js",
-    "generate-client": "./scripts/load-declarative-schema.sh && orval",
+    "generate-client": "bash ./scripts/load-declarative-schema.sh && orval",
     "validate-links": "ts-node --skip-project ./scripts/validate-links.ts",
     "validate-lock": "node ./scripts/validate-lock-files.js",
     "preanalyze-lowcode": "TS_NODE_TRANSPILE_ONLY=true pnpm run generate-client",
