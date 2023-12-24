@@ -5,7 +5,7 @@ metadata:
   # This name uniquely identifies the Deployment
   name: airbyte-minio
   annotations:
-    helm.sh/hook: pre-install
+    helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-1"
   labels:
     {{ include "airbyte.minioLabels" . | nindent 4 }}
@@ -18,7 +18,7 @@ spec:
       - metadata:
           name: airbyte-minio-pv-claim
         spec:
-          accessModes: [ "ReadWriteOnce" ]
+          accessModes: [ "ReadWriteMany" ]
           resources:
             requests:
               storage: {{ .Values.minio.storage.volumeClaimValue  }}
@@ -47,7 +47,7 @@ spec:
           # Mount the volume into the pod
           volumeMounts:
             - name: airbyte-minio-pv-claim # must match the volume name, above
-              mountPath: "/data"
+              mountPath: "/storage"
       {{- with .Values.minio.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -69,7 +69,7 @@ metadata:
   labels:
     {{ include "airbyte.minioLabels" . | nindent 4 }}
   annotations:
-    helm.sh/hook: pre-install
+    helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-1"
 spec:
   ports:
@@ -86,10 +86,14 @@ kind: Pod
 metadata:
   name: airbyte-minio-create-bucket
   annotations:
-    "helm.sh/hook": post-install, post-upgrade
-    "helm.sh/hook-delete-policy": hook-succeeded, before-hook-creation
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   restartPolicy: OnFailure
+  volumes:
+    - name: airbyte-minio-pv-claim
+      persistentVolumeClaim:
+        claimName: airbyte-minio-pv-claim-airbyte-minio-0 # pvc as created earlier
   containers:
     - name: minio-mc
       image: minio/mc
@@ -104,4 +108,12 @@ spec:
           value: {{ .Values.minio.auth.rootPassword }}
         - name: MINIO_ENDPOINT
           value: {{ .Values.minio.endpoint }}
+        - name: MC_CONFIG_DIR
+          value: /data
+      volumeMounts:
+        - name: airbyte-minio-pv-claim
+          mountPath: "/data"
 {{ end }}
+ 
+ 
+ 

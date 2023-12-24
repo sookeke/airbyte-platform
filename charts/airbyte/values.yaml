@@ -30,17 +30,19 @@ global:
     ##  logs.accessKey.existingSecret
     ##  logs.accessKey.existingSecretKey
     accessKey:
+      # -- Logs access key
       password: ""
+      # -- Existing secret
       existingSecret: ""
+      # -- Existing secret key
       existingSecretKey: ""
-    ##  logs.secretKey.password Logs Secret Key
-    ##  logs.secretKey.existingSecret
-    ##  logs.secretKey.existingSecretKey
     secretKey:
+      # -- Logs secret key
       password: ""
+      # -- Existing secret
       existingSecret: ""
+      # -- Existing secret key
       existingSecretKey: ""
-
     ## logs.storage.type Determines which log storage  will be utilized.  One of "MINIO", "S3" or "GCS"
     ##                   Used in conjunction with logs.minio.*, logs.s3.* or logs.gcs.*
     storage:
@@ -55,7 +57,6 @@ global:
       nodeSelector: {}
       tolerations: []
       affinity: {}
-
     ##  logs.externalMinio.enabled Switch to enable or disable an external Minio instance
     ##  logs.externalMinio.host External Minio Host
     ##  logs.externalMinio.port External Minio Port
@@ -63,7 +64,7 @@ global:
     externalMinio:
       enabled: false
       host: localhost
-      port: 9000
+      port: 9000    
 
     ##  logs.s3.enabled Switch to enable or disable custom S3 Log location
     ##  logs.s3.bucket Bucket name where logs should be stored
@@ -159,6 +160,9 @@ global:
 
 ## @section Common Parameters
 
+ ## image:
+ ##    tag: 0.50.35
+
 ##  nameOverride -- String to partially override airbyte.fullname template with a string (will prepend the release name)
 ##
 nameOverride: ""
@@ -173,7 +177,7 @@ fullnameOverride: ""
 ##  serviceAccount.name -- Name of the service account to use. If not set and create is true, a name is generated using the fullname template.
 ##
 serviceAccount:
-  create: true
+  create: false
   annotations: {}
   name: *service-account-name
 
@@ -192,7 +196,7 @@ webapp:
   ##  webapp.image.pullPolicy the pull policy to use for the airbyte webapp image
   ##  webapp.image.tag The airbyte webapp image tag. Defaults to the chart's AppVersion
   image:
-    repository: airbyte/webapp
+    repository: image-registry.openshift-image-registry.svc:5000/e84410-dev/airbyte-webapp
     pullPolicy: IfNotPresent
 
   ##  webapp.podAnnotations [object] Add extra annotations to the webapp pod(s)
@@ -205,11 +209,11 @@ webapp:
 
   ##  webapp.containerSecurityContext Security context for the container
   ## Examples:
-  ## containerSecurityContext:
-  ##    runAsNonRoot: true
-  ##    runAsUser: 1000
-  ##    readOnlyRootFilesystem: true
-  containerSecurityContext: {}
+  containerSecurityContext:
+     runAsNonRoot: true
+     runAsUser: 1001110001
+     readOnlyRootFilesystem: true
+  ## containerSecurityContext: {}
 
   ## Configure extra options for the webapp containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
@@ -248,7 +252,7 @@ webapp:
   ##  webapp.service.annotations Annotations for the webapp service resource
   service:
     type: ClusterIP
-    port: 80
+    port: 8080
     annotations: {}
 
   ## Web app resource requests and limits
@@ -293,18 +297,28 @@ webapp:
   ##  webapp.ingress.annotations [object] Ingress annotations done as key:value pairs
   ##  webapp.ingress.hosts The list of hostnames to be covered with this ingress record.
   ##  webapp.ingress.tls [array] Custom ingress TLS configuration
-  ingress:
-    enabled: false
-    className: ""
-    annotations: {}
+  ## ingress:
+   ## enabled: false
+   ## className: ""
+   ## annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-    hosts: []
+   ## hosts: []
     # - host: chart-example.local
     #   paths:
     #   - path: /
     #     pathType: ImplementationSpecific
 
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: localhost
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    
     tls: []
     # - secretName: chart-example-tls
     #   hosts:
@@ -322,27 +336,27 @@ webapp:
 
   ##  webapp.extraVolumeMounts [array] Additional volumeMounts for webapp container(s).
   ## Examples (when using `webapp.containerSecurityContext.readOnlyRootFilesystem=true`):
-  ## extraVolumeMounts:
-  ##   - name: var-run
-  ##     mountPath: /var/run/
-  ##   - name: var-cache-nginx
-  ##     mountPath: /var/cache/nginx
-  ##   - mountPath: /etc/nginx/conf.d
-  ##     name: nginx-conf-d
+  extraVolumeMounts:
+    - name: var-run
+      mountPath: /var/run/
+    - name: var-cache-nginx
+      mountPath: /var/cache/nginx
+    - mountPath: /etc/nginx/conf.d
+      name: nginx-conf-d
   ##
-  extraVolumeMounts: []
+  ## extraVolumeMounts: []
 
   ##  webapp.extraVolumes [array] Additional volumes for webapp pod(s).
   ## Examples (when using `webapp.containerSecurityContext.readOnlyRootFilesystem=true`):
-  ## extraVolumes:
-  ##   - name: var-run
-  ##     emptyDir: {}
-  ##   - name: var-cache-nginx
-  ##     emptyDir: {}
-  ##   - name: nginx-conf-d
-  ##     emptyDir: {}
+  extraVolumes:
+    - name: var-run
+      emptyDir: {}
+    - name: var-cache-nginx
+      emptyDir: {}
+    - name: nginx-conf-d
+      emptyDir: {}
   ##
-  extraVolumes: []
+  ## extraVolumes: []
 
   ##  extraContainer [array] Additional container for server pod(s)
   ## Example:
@@ -422,7 +436,7 @@ pod-sweeper:
   image:
     repository: bitnami/kubectl
     pullPolicy: IfNotPresent
-    tag: 1.28.4
+    tag: latest
 
   ##  podSweeper.podAnnotations [object] Add extra annotations to the podSweeper pod
   ##
@@ -1273,26 +1287,26 @@ temporal:
 
   ##  temporal.containerSecurityContext Security context for the container
   ## Examples:
-  ## containerSecurityContext:
-  ##    runAsNonRoot: true
-  ##    runAsUser: 1000
-  ##    readOnlyRootFilesystem: true
-  containerSecurityContext: {}
+  containerSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 1001110000  ## Omitt this and openshift will alloccate a UUID user
+    readOnlyRootFilesystem: true
+  ## containerSecurityContext: {}
 
-  ##  temporal.extraInitContainers Additional InitContainers to initialize the pod
+  ##  temporal.extraInitContainers Additional InitContainers to initialize the pod es: [1001110000, 1001119999], 
   ## Examples (when using `temporal.containerSecurityContext.readOnlyRootFilesystem=true`):
-  ## extraInitContainers:
-  ##   - name: config-loader
-  ##     image: temporalio/auto-setup:1.20.1
-  ##     command:
-  ##       - /bin/sh
-  ##       - -c
-  ##       - >-
-  ##         find /etc/temporal/config/ -maxdepth 1 -mindepth 1 -exec cp -ar {} /config/ \;
-  ##     volumeMounts:
-  ##       - name: config
-  ##         mountPath: /config
-  extraInitContainers: []
+  extraInitContainers:
+    - name: config-loader
+      image: temporalio/auto-setup:1.20.1
+      command:
+        - /bin/sh
+        - -c
+        - >-
+          find /etc/temporal/config/ -maxdepth 1 -mindepth 1 -exec cp -ar {} /config/ \;
+      volumeMounts:
+        - name: config
+          mountPath: /config
+  ## extraInitContainers: []
 
   ## Configure extra options for the temporal containers' liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
@@ -1341,23 +1355,23 @@ temporal:
 
   ##  temporal.extraVolumeMounts [array] Additional volumeMounts for temporal container(s).
   ## Examples (when using `temporal.containerSecurityContext.readOnlyRootFilesystem=true`):
-  ## extraVolumeMounts:
-  ##   - name: tmpdir
-  ##     mountPath: /tmp
-  ##   - name: config
-  ##     mountPath: /etc/temporal/config
+  extraVolumeMounts:
+    - name: tmpdir
+      mountPath: /tmp
+    - name: config
+      mountPath: /etc/temporal/config
   ##
-  extraVolumeMounts: []
+  ## extraVolumeMounts: []
 
   ##  temporal.extraVolumes [array] Additional volumes for temporal pod(s).
   ## Examples (when using `temporal.containerSecurityContext.readOnlyRootFilesystem=true`):
-  ## extraVolumes:
-  ##   - name: tmpdir
-  ##     emptyDir: {}
-  ##  - name: config
-  ##    emptyDir: {}
+  extraVolumes:
+    - name: tmpdir
+      emptyDir: {}
+    - name: config
+      emptyDir: {}
   ##
-  extraVolumes: []
+  ## extraVolumes: []
 
   ## Temporal resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -1411,7 +1425,7 @@ postgresql:
   containerSecurityContext:
     runAsNonRoot: true
   commonAnnotations:
-    helm.sh/hook: pre-install
+    helm.sh/hook: pre-install,pre-upgrade
     helm.sh/hook-weight: "-1"
 ## External PostgreSQL configuration
 ## All of these values are only used when postgresql.enabled is set to false
@@ -1447,13 +1461,18 @@ minio:
   ## image.tag Minio tag image
   image:
     repository: minio/minio
-    tag: RELEASE.2023-11-20T22-40-07Z
+    tag: latest
 
   auth:
-    rootUser: minio
-    rootPassword: minio123
+    rootUser: admin
+    rootPassword: Alu87HDeVe
   storage:
     volumeClaimValue: 500Mi
+  ##
+  ## extraVolumeMounts: []
+
+  ##  temporal.extraVolumes [array] Additional volumes for temporal pod(s).
+  ## Examples (when using `temporal.containerSecurityContext.readOnlyRootFilesystem=true`):
 
 ## @section cron parameters
 
@@ -1710,9 +1729,11 @@ connector-builder-server:
   log:
     level: "INFO"
 
-  env_vars: {}
+  env_vars: 
+    MICRONAUT_SERVER_PORT: "8080" # bind micronaut to use 8080 instead of 80.
   service:
-    port: 80
+    type: ClusterIP
+    port: 8080
 
 airbyte-api-server:
   enabled: true
@@ -1785,7 +1806,7 @@ airbyte-api-server:
 
   env_vars: {}
   service:
-    port: 80
+    port: 8080
 
   ## Configure the ingress resource that allows you to access the Airbyte API.
   ## ref: http://kubernetes.io/docs/user-guide/ingress/
@@ -1819,7 +1840,7 @@ keycloak:
     adminPassword: keycloak123
 
 keycloak-setup:
-  enabled: false
+  enabled: true
 
 workload-api:
   enabled: false
