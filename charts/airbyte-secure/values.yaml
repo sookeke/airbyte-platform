@@ -140,7 +140,7 @@ ingress:
   ingressClassName: ""
   ## @param ingress.hostname Default host for the ingress record
   ##
-  hostname: proxy.e84410-dev.apps.gold.devops.gov.bc.ca
+  hostname: proxy.e84410-dev.apps.gold.devops.gov.bc.ca # SECURED HOST_NAME
   ## @param ingress.path Default path for the ingress record
   ## NOTE: You may need to set this to '/*' in order to use this with ALB ingress controllers
   ##
@@ -276,13 +276,13 @@ configuration:
   clientID: "kafka-Oauth2-Proxy"
   ## @param configuration.clientSecret OAuth client secret
   ##
-  clientSecret: "aa8LCBPzRt6ZOJapCYkCBzgjdcAEJfae"
+  clientSecret: "<DIAM_SSO_SECRET>"
   ## Create a new secret with the following command openssl rand -base64 32 | head -c 32 | base64
   ## Use an existing secret for OAuth2 credentials (see secret.yaml for required fields)
   ##
   ## @param configuration.cookieSecret OAuth cookie secret
   ##
-  cookieSecret: "c29tZXJhbmRvbXN0cmluZzEyQkNECg=="
+  cookieSecret: "<YOUR_COOKIE_KEY>"
   ## @param configuration.existingSecret Secret with the client ID, secret and cookie secret
   ##
   existingSecret: ""
@@ -503,7 +503,7 @@ args:
     - >-
       --oidc-issuer-url=https://test.common-sso.justice.gov.bc.ca/auth/realms/IDIR
     - >-
-      --upstream=http://my-airbyte-release-airbyte-webapp-svc.e84410-dev.svc.cluster.local:8080
+      --upstream=http://my-airbyte-release-airbyte-webapp-svc.e84410-dev.svc.cluster.local:8080 ## your airbyte-webapp internal URL
     - '--allowed-role=kafka-proxy-admin'
     - '--http-address=0.0.0.0:4180'
     - '--cookie-expire=1h'
@@ -601,9 +601,9 @@ extraEnvVars:
   - name: OAUTH2_PROXY_CLIENT_ID
     value: kafka-Oauth2-Proxy
   - name: OAUTH2_PROXY_CLIENT_SECRET
-    value: aa8LCBPzRt6ZOJapCYkCBzgjdcAEJfae
+    value: <DIAM_SSO_SECRET>
   - name: OAUTH2_PROXY_COOKIE_SECRET
-    value: c29tZXJhbmRvbXN0cmluZzEyQkNECg==
+    value: <YOUR_COOKIE_KEY>
   - name: OAUTH2_PROXY_EMAIL_DOMAINS
     value: '*'
   - name: OAUTH2_PROXY_COOKIE_NAME
@@ -615,7 +615,7 @@ extraEnvVars:
   - name: OAUTH2_PROXY_SESSION_STORE_TYPE
     value: redis
   - name: OAUTH2_PROXY_REDIS_CONNECTION_URL
-    value: 'redis://proxy-redis-master.e84410-dev.svc.cluster.local:6379'
+    value: 'redis://{OAUTH2_RELEASE_NAME}-master:6379'
   - name: OAUTH2_PROXY_SKIP_JWT_BEARER_TOKENS
     value: 'true'
   - name: OAUTH2_PROXY_OIDC_EMAIL_CLAIM
@@ -625,7 +625,7 @@ extraEnvVars:
   - name: OAUTH2_PROXY_SKIP_PROVIDER_BUTTON
     value: 'true'
   - name: OAUTH2_PROXY_UPSTREAMS
-    value: 'http://my-airbyte-release-airbyte-webapp-svc:8080/'
+    value: 'http://{AIRBYTE_RELEASE_NAME}-airbyte-webapp-svc:8080/'
 
 ## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars for OAuth2 Proxy nodes
 ##
