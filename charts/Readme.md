@@ -46,7 +46,7 @@ git reset --hard
 
 ### Airbyte Helm Install and Upgrade:
 
-See the minimum required values for Airbyte Helm installation on OpenShift, considering customized these values to suite your installations on OpenShift such as Gold or Emerald.
+See the minimum required [values](https://github.com/sookeke/airbyte-platform/blob/0.50.35-oc/charts/airbyte/values.yaml) for Airbyte Helm installation on OpenShift, considering customized these values to suite your installations on OpenShift such as Gold or Emerald.
 
 Note: Utilize Minio S3 for logs, sessions, and state. Ensure that the Minio object storage is configured appropriately with considerations for permissions and settings, including MC_CONFIG_DIR. Copy or update your minio.yaml to reflect the one in the repository.
 
