@@ -58,9 +58,9 @@ helm upgrade csbiss . --dependency-update --values ./values.yaml
 
 #### Securing Airbyte:
 
-As Airbyte connectors serve as data pipes moving data from Point A to Point B, it is advised not to expose Airbyte publicly without robust authentication through a valid Identity Provider. For securing Airbyte, use OAuth2-proxy with our DIAM SSO to secure the Airbyte UI. Refer to the airbyte-secure folder for bitnami/oauth2-proxy values for installation and configuration.
+As Airbyte connectors serve as data pipes moving data from Point A to Point B, it is advised not to expose Airbyte publicly without robust authentication through a valid Identity Provider. For securing Airbyte, use OAuth2-proxy with our DIAM SSO to secure the Airbyte UI. Refer to the airbyte-secure folder for [bitnami/oauth2-proxy values](https://github.com/sookeke/airbyte-platform/blob/0.50.35-oc/charts/airbyte-secure/values.yaml) for installation and configuration.
 
-Before running the installation, coordinate with the DIAM team for the OIDC client secret. Finally, install the airbyte-proxy using the following Helm command:
+Before running the installation, coordinate with the DIAM team for the OIDC client secret. Finally, install the airbyte-proxy using the following Helm command using airbyte-secure dir as root:
 
 ```
 helm install airbyte-proxy oci://registry-1.docker.io/bitnamicharts/oauth2-proxy --values values.yaml
