@@ -62,6 +62,7 @@ Before running the installation, coordinate with the DIAM team for the OIDC clie
 ```
 helm install airbyte-proxy oci://registry-1.docker.io/bitnamicharts/oauth2-proxy --values values.yaml
 ```
+![image](https://github.com/sookeke/airbyte-platform/assets/76934070/292c9c9a-f2ec-4ac1-85f7-61f93b9350b5)
 
 ### Scaling Airbyte in OpenShift
 
