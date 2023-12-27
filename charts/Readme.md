@@ -7,7 +7,7 @@ git clone the latest stable version
 git clone -b 0.50.38 https://github.com/sookeke/airbyte-platform.git
 
 
-Before deploying Airbyte in our OpenShift namespace, we must establish several prerequisite configurations. Specifically, we need to create the airbyte-admin service account along with its corresponding roles and role bindings. Utilize the provided service account YAML in the Airbyte chart template, and subsequently, set the variable "createServiceAccount" to false.
+Before deploying Airbyte in our OpenShift namespace, we must establish several prerequisite configurations. Specifically, we need to create the airbyte-admin service account along with its corresponding roles and role bindings. Utilize the provided [service account YAML](https://github.com/sookeke/airbyte-platform/blob/0.50.38/charts/airbyte/templates/serviceaccount.yaml) in the Airbyte chart template, and subsequently, set the variable "createServiceAccount" to false.
 
 Additionally, the airbyte-webapp is currently configured to run on port *:80, a port that is presently unavailable within our OpenShift Cluster. To address this issue, follow the steps outlined below.
 
