@@ -7,7 +7,49 @@ git clone the latest stable version
 git clone -b 0.50.38 https://github.com/sookeke/airbyte-platform.git
 
 
-Before deploying Airbyte in our OpenShift namespace, we must establish several prerequisite configurations. Specifically, we need to create the airbyte-admin service account along with its corresponding roles and role bindings. Utilize the provided [service account YAML](https://github.com/sookeke/airbyte-platform/blob/0.50.38/charts/airbyte/templates/serviceaccount.yaml) in the Airbyte chart template, and subsequently, set the variable "createServiceAccount" to false.
+Before deploying Airbyte in our OpenShift namespace, we must establish several prerequisite configurations. Specifically, we need to create the airbyte-admin service account along with its corresponding roles and role bindings. Utilize the provided [service account YAML](https://github.com/sookeke/airbyte-platform/blob/0.50.38/charts/airbyte/templates/serviceaccount.yaml) in the Airbyte chart template, and subsequently, set the [variable](https://github.com/sookeke/airbyte-platform/blob/3b41e2ae7ac7cedb414935b4c371f4cb2652d3d9/charts/airbyte/values.yaml#L179C1-L179C15) "createServiceAccount" to false.
+
+The service account required for airbyte is below -
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: airbyte-admin
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: airbyte-admin-role
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["pods/attach"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: airbyte-admin-binding
+roleRef:
+  apiGroup: ""
+  kind: Role
+  name: airbyte-admin-role
+subjects:
+  - kind: ServiceAccount
+    name: airbyte-admin
+
+```
 
 Additionally, the airbyte-webapp is currently configured to run on port *:80, a port that is presently unavailable within our OpenShift Cluster. To address this issue, follow the steps outlined below.
 
