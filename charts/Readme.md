@@ -104,3 +104,74 @@ extraEnv:
 ```
 
 Before a sync job runs (source connector job + destination connector job = 2 Jobs = 10 containers), optimal performance and avoidance of 503 timeouts necessitate that each job uses a CPU of at least 3/3.5 for all 5 containers. This implies a minimum of 7 free CPUs for usage when running a sync job concurrently.
+
+### For Emerald - Possible Network Security Policies are -
+```
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: airbyte-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: my-airbyte-release
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: my-airbyte-release
+        - podSelector:
+            matchLabels:
+              app: airbyte-worker
+  policyTypes:
+    - Ingress
+```
+***egress**
+```
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: airbyte-egress
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: my-airbyte-release
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: my-airbyte-release
+        - podSelector:
+            matchLabels:
+              app: airbyte-worker
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: postgresql
+  policyTypes:
+    - Egress
+```
+For dynamically created sync job to communicate
+
+```
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: airbyte-worker-egress
+  podSelector:
+    matchLabels:
+      app: airbyte-worker
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: airbyte-worker
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: my-airbyte-release
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: postgresql
+  policyTypes:
+    - Egress
+
+```
